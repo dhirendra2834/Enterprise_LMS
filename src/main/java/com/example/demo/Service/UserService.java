@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.Config.JwtUtil;
@@ -12,15 +13,21 @@ import com.example.demo.model.User;
 import com.example.demo.model.Type.Role;
 import com.example.demo.repository.UserRepository;
 
+import lombok.AllArgsConstructor;
+
 @Service
+@AllArgsConstructor
 public class UserService {
    
-	@Autowired
 	private UserRepository userRepository;
+	
 	private JwtUtil jwtUtil;
+	
+	private PasswordEncoder passwordEncoder;
 
 	// registration 
 	public UserResponseDTO registration(User user) {
+		System.out.println("user Service is called");
 
 	    // Check whether user already exists
 	    Optional<User> userExists = userRepository.findByEmail(user.getEmail());
@@ -28,13 +35,17 @@ public class UserService {
 	    if (userExists.isPresent()) {
 	        throw new RuntimeException("User already exists with this email");
 	    }
+  
+	   User savedUser=User.builder()
+			   .name(user.getName())
+			   .email(user.getEmail())
+			   .password(passwordEncoder.encode(user.getPassword()))
+		       .roles(Set.of(Role.STUDENT))
+		       .phoneNumber(user.getPhoneNumber())
+			   .build();
 
-	    // New users get STUDENT role by default
-	    user.setRoles(Set.of(Role.STUDENT));
-
-	    // Save user
-	    User savedUser = userRepository.save(user);
-
+        // Save data in DB
+	   userRepository.save(savedUser);
 	    // Generate JWT using saved user's roles
 	    String token = jwtUtil.generateToken(
 	            savedUser.getEmail(),
@@ -54,6 +65,7 @@ public class UserService {
 	    return userResponseDTO;
 	}
 	
+//	 this method is called and add by Admin or Adminitration
 	public UserResponseDTO addUser(User user) {
 
 	    // Check whether user already exists
@@ -63,9 +75,13 @@ public class UserService {
 	        throw new RuntimeException("User already exists with this email");
 	    }
 
-
-	    // Save user
-	    User savedUser = userRepository.save(user);
+	    User savedUser=User.builder()
+				   .name(user.getName())
+				   .email(user.getEmail())
+				   .password(passwordEncoder.encode(user.getPassword()))
+			       .roles(user.getRoles())
+			       .phoneNumber(user.getPhoneNumber())
+				   .build();
 
 	    // Generate JWT using saved user's roles
 	    String token = jwtUtil.generateToken(

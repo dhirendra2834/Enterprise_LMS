@@ -16,12 +16,14 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-	@Autowired
-	private JwtUtil jwtUtil;
+	
+	private final JwtUtil jwtUtil;
 
 	@Autowired
 	private UserDetailsService userDetailsService;

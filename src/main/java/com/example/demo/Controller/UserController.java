@@ -25,6 +25,7 @@ public class UserController {
 //	create a user
 	@PostMapping("/signup")
 	public ResponseEntity<UserResponseDTO> signup(@RequestBody User user){
+		System.out.println("user Controller is called");
 		UserResponseDTO userResponseDTO= userService.registration(user);
 		return ResponseEntity.ok(userResponseDTO);
 	}

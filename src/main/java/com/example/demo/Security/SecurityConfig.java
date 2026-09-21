@@ -25,11 +25,11 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		// used for Disable third party hit the backend
-		return http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth -> 
-			auth.requestMatchers("/user/signup","/user/login").permitAll()
-				// Role based API end Point filtering
-				.requestMatchers("/user/create").hasAnyRole("ADMIN","ADMINITRATION").anyRequest()
-				.authenticated())
+		return http.csrf(csrf -> csrf.disable())
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/user/signup", "/user/login").permitAll()
+						// Role based API end Point filtering
+						.requestMatchers("/user/create").hasAnyRole("ADMIN", "ADMINITRATION").anyRequest()
+						.authenticated())
 				// this line make from Stateful to stateless
 				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				// Before UsernamePasswordAuth filter keep JWTfilter

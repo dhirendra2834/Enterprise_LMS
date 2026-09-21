@@ -20,10 +20,18 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class User implements UserDetails {
 
     @Id
@@ -39,7 +47,6 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
      
-    @Column(nullable = false)
     private String phoneNumber;
     
     @Column(nullable = false, updatable = false)
@@ -48,14 +55,15 @@ public class User implements UserDetails {
     // Audit information
     private Long createdBy;
 
-    @PrePersist
-    public void onCreate() {
-        this.createdAt = new Date();
-    }
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
+    
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = new Date();
+    }
 
 //     AUthority added here 
     @Override
