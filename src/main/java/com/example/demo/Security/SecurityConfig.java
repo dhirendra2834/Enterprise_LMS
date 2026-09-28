@@ -28,21 +28,20 @@ public class SecurityConfig {
 		return http.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(auth -> auth.requestMatchers("/user/signup", "/user/login").permitAll()
 						// Role based API end Point filtering
-						.requestMatchers("/user/create").hasAnyRole("ADMIN", "ADMINITRATION").anyRequest()
+						.requestMatchers("/user/create", "/user/get/*" ).hasAnyRole("ADMIN", "ADMINITRATION").anyRequest()
 						.authenticated())
 				// this line make from Stateful to stateless
 				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				// Before UsernamePasswordAuth filter keep JWTfilter
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class).build(); // its make filterchain
-																									// Authentication //
-																									// object
+																									// Authentication //																							// object
 	}
 
 // Used for Authentication provides 
-	@Bean
-	public AuthenticationManager authManager(AuthenticationConfiguration config) throws Exception {
-		return config.getAuthenticationManager();
-	}
+	 @Bean
+	  public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+	        return configuration.getAuthenticationManager();
+	    }
 
 // Used for Password Bcrypt 
 	@Bean

@@ -1,13 +1,17 @@
 package com.example.demo.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.Config.JwtUtil;
+import com.example.demo.DTO.LoginRequestDTO;
 import com.example.demo.DTO.UserResponseDTO;
 import com.example.demo.model.User;
 import com.example.demo.model.Type.Role;
@@ -24,6 +28,8 @@ public class UserService {
 	private JwtUtil jwtUtil;
 	
 	private PasswordEncoder passwordEncoder;
+	
+	private AuthenticationManager authenticationManager;
 
 	// registration 
 	public UserResponseDTO registration(User user) {
@@ -56,6 +62,7 @@ public class UserService {
 	    UserResponseDTO userResponseDTO =
 	            UserResponseDTO.builder()
 	                    .message("User registered successfully")
+	                    .Id(savedUser.getId())
 	                    .email(savedUser.getEmail())
 	                    .name(savedUser.getName())
 	                    .jwttoken(token)
@@ -66,7 +73,7 @@ public class UserService {
 	}
 	
 //	 this method is called and add by Admin or Adminitration
-	public UserResponseDTO addUser(User user) {
+	public UserResponseDTO addUser(User user, Long id) {
 
 	    // Check whether user already exists
 	    Optional<User> userExists = userRepository.findByEmail(user.getEmail());
@@ -80,9 +87,12 @@ public class UserService {
 				   .email(user.getEmail())
 				   .password(passwordEncoder.encode(user.getPassword()))
 			       .roles(user.getRoles())
+			       .createdBy(id)
 			       .phoneNumber(user.getPhoneNumber())
 				   .build();
 
+	     
+	    userRepository.save(savedUser);
 	    // Generate JWT using saved user's roles
 	    String token = jwtUtil.generateToken(
 	            savedUser.getEmail(),
@@ -93,6 +103,7 @@ public class UserService {
 	    UserResponseDTO userResponseDTO =
 	            UserResponseDTO.builder()
 	                    .message("User registered successfully")
+	                    .Id(savedUser.getId())
 	                    .email(savedUser.getEmail())
 	                    .name(savedUser.getName())
 	                    .jwttoken(token)
@@ -102,34 +113,56 @@ public class UserService {
 	    return userResponseDTO;
 	}
 
-	public UserResponseDTO login(User user) {
-		Optional<User> userExits= userRepository.findByEmail(user.getEmail());
-		
-		if(!userExits.isPresent()) {
-			 throw new RuntimeException("User not exists with this email");
-		}
-		// Get the actual user from database
-	    User existingUser = userExits.get();
-		
+	public UserResponseDTO login(LoginRequestDTO loginRequestDto) {
+		System.out.println("login method is running "+loginRequestDto.getEmail()+ " "+ loginRequestDto.getPassword());
+		 
+           // check Authentication
+		   Authentication authentication = authenticationManager.authenticate(
+	                new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail() , loginRequestDto.getPassword())
+	        );
+
+
+	               
+	      System.out.println("login method is running1 ");
+         //	  Get data 
+	      User existingUser = (User) authentication.getPrincipal();
+
+	      System.out.println("login method is running2 ");
 		 // Generate JWT using user email and roles
 	    String token = jwtUtil.generateToken(
 	    		existingUser.getEmail(),
 	    		existingUser.getRoles()
 	    );
-		
+	    System.out.println("login method is running3 ");
 		 UserResponseDTO userResponseDTO =
 		            UserResponseDTO.builder()
 		                    .message("User registered successfully")
+		                    .Id(existingUser.getId())
 		                    .email(existingUser.getEmail())
 		                    .name(existingUser.getName())
 		                    .jwttoken(token)
 		                    .roles(existingUser.getRoles())
 		                    .build();
+		 
+			System.out.println("login method is end ");
+
 
 		    return userResponseDTO;
 		
 	}
-	
+
+	public Optional<User> getUserDataById(int id) {
+		Optional<User> userexits= userRepository.findById(id);
+		if(!userexits.isPresent()) {
+			   throw new RuntimeException("User does not exists with this email");
+		}
+		return userexits;
+	}
+
+	public List<User> getAllUserData() {
+		List<User> allUserData= userRepository.findAll();
+		return allUserData;
+	}
 	
 	
 }

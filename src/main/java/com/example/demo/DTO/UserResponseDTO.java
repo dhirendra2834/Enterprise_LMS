@@ -12,6 +12,7 @@ import lombok.Data;
 public class UserResponseDTO {
 	
     private String message;
+    private Integer Id;
     private String name;
     private String email;
     private String jwttoken;
