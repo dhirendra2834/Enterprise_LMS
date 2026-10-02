@@ -19,6 +19,8 @@ public class Subject {
 	
 	private String name;
 	
+	private String description;
+	
 	@ManyToOne
 	@JoinColumn(name = "chapter_id")
 	private Chapter chapter;

@@ -21,25 +21,10 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Controller
-
 @RequestMapping("/user")
 public class UserController {
 
 	private final UserService userService;
-
-//	create a user
-	@PostMapping("/signup")
-	public ResponseEntity<UserResponseDTO> signup(@RequestBody User user) {
-		System.out.println("user Controller is called");
-		UserResponseDTO userResponseDTO = userService.registration(user);
-		return ResponseEntity.ok(userResponseDTO);
-	}
-
-	@PostMapping("/login")
-	public ResponseEntity<UserResponseDTO> login(@RequestBody LoginRequestDTO user) {
-		UserResponseDTO userResponseDTO = userService.login(user);
-		return ResponseEntity.ok(userResponseDTO);
-	}
 
 //	 create user by Admin or Administration 
 	@PreAuthorize("hasAnyRole('ADMIN', 'ADMINISTRATION')")
@@ -49,7 +34,8 @@ public class UserController {
 		return ResponseEntity.ok(userResponseDTO);
 	}
 	
-//	 get 1 User details
+//	 get User details By UserId
+	@PreAuthorize("hasAnyRole('ADMIN', 'ADMINISTRATION')")
 	@GetMapping("/get/{Id}")
 	public ResponseEntity<Optional<User>> getUserDataById(@PathVariable int Id){
 		Optional<User> user = userService.getUserDataById(Id);
