@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.Column;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 
@@ -15,9 +16,12 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import lombok.Builder;
 import lombok.Data;
 import com.example.demo.model.Subject;
 
+@Builder
 @Data
 @Entity
 public class Course {
@@ -43,5 +47,10 @@ public class Course {
 	private User createdBy;
 
 	private LocalDateTime createdAt;
+	
+	 @PrePersist
+	  public void prePersist() {
+	        createdAt = LocalDateTime.now();
+	   }
 
 }
