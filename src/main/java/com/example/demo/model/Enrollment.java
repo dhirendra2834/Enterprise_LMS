@@ -52,5 +52,5 @@ public class Enrollment {
     @Enumerated(EnumType.STRING)
     private EnrollmentStatus status;
 
-    private Double progress;
+    private Double progress= 0.00;
 }

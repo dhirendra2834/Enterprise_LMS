@@ -11,8 +11,6 @@ import com.example.demo.model.Course;
 public interface CourseRepository extends JpaRepository<Course, Integer>{
 	
 	Course findByName(String name);
-	
-	List<Course> findAllById(List<Course> list);
 
 
 }

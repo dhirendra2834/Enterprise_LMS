@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,10 +29,18 @@ public class UserController {
 
 //	 create user by Admin or Administration 
 	@PreAuthorize("hasAnyRole('ADMIN', 'ADMINISTRATION')")
-	@PostMapping("/create/{id}")
-	public ResponseEntity<UserResponseDTO> createUser(@RequestBody User user, @PathVariable Long id) {
-		UserResponseDTO userResponseDTO = userService.addUser(user,id);
+	@PostMapping("/create")
+	public ResponseEntity<UserResponseDTO> createUser(@RequestBody User user, Authentication authentication) {
+		UserResponseDTO userResponseDTO = userService.addUser(user,authentication);
 		return ResponseEntity.ok(userResponseDTO);
+	}
+	
+//	get User Details (Self profile)
+	@GetMapping("/me")
+	public ResponseEntity<UserResponseDTO> getselfData(Authentication authentication){
+		UserResponseDTO userDetails = userService.getSelfDetails(authentication);
+		return ResponseEntity.ok(userDetails);
+
 	}
 	
 //	 get User details By UserId

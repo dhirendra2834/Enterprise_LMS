@@ -1,6 +1,8 @@
 package com.example.demo.Controller;
 
 import java.util.List;
+
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 
 
@@ -31,13 +33,14 @@ public class SubjectController {
 
 //	create Subject in the particular courseId
 	@PostMapping
+	@PreAuthorize("hasAnyRole('ADMIN', 'ADMINISTRATION')")
 	public ResponseEntity<String> createSubjectInside_Course(@RequestBody SubjectRequestDto subject, Authentication authentication) {
 		String subjectCreatedOrNot = subjectService.createSubject(subject, authentication);
 	return ResponseEntity.ok(subjectCreatedOrNot);
 	}
 
 //	get all Subject CourseId
-	@GetMapping("/{Id}")
+	@GetMapping("/Course/{Id}")
 	public ResponseEntity<List<SubjectResponseDto>> getAllSubjectsByCourseId(@PathVariable int Id) {
 		List<SubjectResponseDto> subjects = subjectService.fetchAllSubjectByCourseId(Id);
 		return ResponseEntity.ok(subjects);
@@ -61,6 +64,7 @@ public class SubjectController {
 
 
 //	Update the Subject By SubjectId
+	@PreAuthorize("hasAnyRole('ADMIN', 'ADMINISTRATION')")
 	@PutMapping("/{Id}")
 	public ResponseEntity<String> updateSubject_subjectId(@RequestBody Subject subject, @PathVariable int Id) {
 		String subjectUpdatedOrNot = subjectService.updateSubjectData_subjectId(subject, Id);
@@ -68,6 +72,7 @@ public class SubjectController {
 	}
 
 //	delete the subject by Id
+	@PreAuthorize("hasAnyRole('ADMIN', 'ADMINISTRATION')")
 	@DeleteMapping("{Id}")
 	public ResponseEntity<String> deleteSubject_SubjectId(@PathVariable int Id) {
 		String subjectDeleted = subjectService.deleteSubjectBysubjectId(Id);

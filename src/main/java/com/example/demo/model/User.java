@@ -53,7 +53,7 @@ public class User implements UserDetails {
     private Date createdAt;
 
     // Audit information
-    private Long createdBy;
+    private Integer createdBy;
 
 
     @ElementCollection(fetch = FetchType.EAGER)

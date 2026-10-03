@@ -30,10 +30,14 @@ public class UserService {
 	private PasswordEncoder passwordEncoder;
 	
 	private AuthenticationManager authenticationManager;
-
+	
+//   for Add user
 //	 this method is called and add by Admin or Adminitration
-	public UserResponseDTO addUser(User user, Long id) {
-
+	public UserResponseDTO addUser(User user, Authentication authentication) {
+  
+         // get login User Details
+		User loggedInUser = (User) authentication.getPrincipal();
+		
 	    // Check whether user already exists
 	    Optional<User> userExists = userRepository.findByEmail(user.getEmail());
 
@@ -46,7 +50,7 @@ public class UserService {
 				   .email(user.getEmail())
 				   .password(passwordEncoder.encode(user.getPassword()))
 			       .roles(user.getRoles())
-			       .createdBy(id)
+			       .createdBy(loggedInUser.getId())
 			       .phoneNumber(user.getPhoneNumber())
 				   .build();
 
@@ -78,6 +82,30 @@ public class UserService {
 			   throw new RuntimeException("User does not exists with this email");
 		}
 		return userexits;
+	}
+	
+	public UserResponseDTO getSelfDetails(Authentication authentication) {
+		User loggedInUser = (User) authentication.getPrincipal();
+		
+		Optional<User> userDetails= userRepository.findById(loggedInUser.getId());
+		if(userDetails.isEmpty()) {
+			throw new Error("user is not login/exits");
+		}
+		
+		User userData= userDetails.get();
+		
+		  UserResponseDTO userResponseDTO =
+		            UserResponseDTO.builder()
+		                    .message("User registered successfully")
+		                    .Id(userData.getId())
+		                    .email(userData.getEmail())
+		                    .name(userData.getName())
+		                    .roles(userData.getRoles())
+		                    .build();
+
+		    return userResponseDTO;
+		
+		
 	}
 
 	public List<User> getAllUserData() {

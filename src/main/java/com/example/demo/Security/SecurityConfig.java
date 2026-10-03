@@ -28,8 +28,9 @@ public class SecurityConfig {
 		return http.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll()
 						// Role based API end Point filtering
-						.requestMatchers("/user/create/**", "/user/get/**","/courses/**").hasAnyRole("ADMIN", "ADMINITRATION")
-						.anyRequest().authenticated())
+						.requestMatchers("/user/create/**", "/user/get/**", "/user/get/all")
+						.hasAnyRole("ADMIN", "ADMINITRATION").anyRequest().authenticated())
+				
 				// this line make from Stateful to stateless
 				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				// Before UsernamePasswordAuth filter keep JWTfilter
