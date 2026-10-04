@@ -5,12 +5,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.core.Authentication;
-
-
 import org.springframework.stereotype.Service;
 
+import com.example.demo.DTO.ChapterResponseDto;
 import com.example.demo.DTO.SubjectRequestDto;
 import com.example.demo.DTO.SubjectResponseDto;
+import com.example.demo.DTO.Subject_ChapterDto;
+import com.example.demo.DTO.Subject_CourseDto;
 import com.example.demo.model.Course;
 import com.example.demo.model.Subject;
 import com.example.demo.model.User;
@@ -74,6 +75,35 @@ public class SubjectService {
 	    return "Subject " + subjectData.getName()
 	            + " created successfully";
 	}
+	
+	   // Convert Chapter Entity -> ChapterResponseDto
+	public List<Subject_ChapterDto> covertChapterToChapterResponseDto(Subject subject){
+		List<Subject_ChapterDto> chapters = 
+					subject.getChapters().stream()
+						.map(chapter-> Subject_ChapterDto.builder()
+								.id(chapter.getId())
+								.name(chapter.getName())
+								.description(chapter.getDescription())
+								.build())
+						.toList();
+		return chapters;
+	}
+	
+
+    // Convert Course Entity -> Subject_CourseDto
+	public List<Subject_CourseDto> covertCourseToSubject_CourseDto(Subject subject){
+		List<Subject_CourseDto> courses =
+				subject.getCourses()
+					.stream()
+					.map(course -> Subject_CourseDto.builder()
+                            .id(course.getId())
+                            .name(course.getName())
+                            .description(course.getDescription())
+                            .build())
+                    .toList();
+    return courses;
+	}
+	  
 //	update the SubjectData by subjectId
 	public String updateSubjectData_subjectId(Subject subject, int id) {
 		
@@ -97,34 +127,28 @@ public class SubjectService {
 //	get subjectData By subjectId
 	
 	public SubjectResponseDto getSubjectById(int id) {
-		Optional<Subject> subjectExits= subjectRepository.findById(id);
-		
-		if(subjectExits.isEmpty()) {
-	        throw new RuntimeException("This subject is not exits");
-		};
-		
-		SubjectResponseDto subjectResponseDto= 
-				SubjectResponseDto.builder()
-				.name(subjectExits.get().getName())
-				.description(subjectExits.get().getDescription())
-				.chapters(subjectExits.get().getChapters())
-				.id(subjectExits.get().getId())
-				.courses(subjectExits.get().getCourses())
-				.build();
-		
-		return subjectResponseDto;
-	}
-//	for response prepare 
-	private SubjectResponseDto convertToSubjectResponseDto(Subject subject) {
 
-	    SubjectResponseDto subjectResponseDto= SubjectResponseDto.builder()
-	            .id(subject.getId())
-	            .name(subject.getName())
-	            .description(subject.getDescription())
-	            .courses(subject.getCourses())
-	            .chapters(subject.getChapters())
-	            .build();
-	    
+	    Optional<Subject> subjectExists = subjectRepository.findById(id);
+
+	    if (subjectExists.isEmpty()) {
+	        throw new RuntimeException("This subject does not exist");
+	    }
+
+	    Subject subject = subjectExists.get();
+    
+	    List<Subject_CourseDto> courses= covertCourseToSubject_CourseDto(subject);
+	    List<Subject_ChapterDto> chapters=covertChapterToChapterResponseDto(subject);
+
+	    // Build final Subject response
+	    SubjectResponseDto subjectResponseDto =
+	            SubjectResponseDto.builder()
+	                    .id(subject.getId())
+	                    .name(subject.getName())
+	                    .description(subject.getDescription())
+	                    .courses(courses)
+	                    .chapters(chapters)
+	                    .build();
+
 	    return subjectResponseDto;
 	}
 
@@ -141,6 +165,23 @@ public class SubjectService {
 		return subjects.stream()
 	            .map(this::convertToSubjectResponseDto)
 	            .toList();
+	}
+	
+//	for response prepare 
+	private SubjectResponseDto convertToSubjectResponseDto(Subject subject) {
+		
+		 List<Subject_CourseDto> courses= covertCourseToSubject_CourseDto(subject);
+		 List<Subject_ChapterDto> chapters=covertChapterToChapterResponseDto(subject);
+
+	    SubjectResponseDto subjectResponseDto= SubjectResponseDto.builder()
+	            .id(subject.getId())
+	            .name(subject.getName())
+	            .description(subject.getDescription())
+	            .courses(courses)
+	            .chapters(chapters)
+	            .build();
+	    
+	    return subjectResponseDto;
 	}
 	
 //	get all Subjects

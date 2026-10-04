@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO.ChapterRequestDto;
 import com.example.demo.DTO.ChapterResponseDto;
+import com.example.demo.DTO.Chapter_SubjectDto;
+import com.example.demo.DTO.Subject_CourseDto;
 import com.example.demo.model.Chapter;
 import com.example.demo.model.Subject;
 import com.example.demo.repository.ChapterRepository;
@@ -47,7 +49,35 @@ public class ChapterService {
 		    return "Chapter " + chapterData.getName()
 		            + " created successfully";
 	}
-	
+
+    // Convert Course Entity -> Subject_CourseDto
+	public List<Subject_CourseDto> covertCourseToSubject_CourseDto(Subject subject){
+		List<Subject_CourseDto> courses =
+				subject.getCourses()
+					.stream()
+					.map(course -> Subject_CourseDto.builder()
+                            .id(course.getId())
+                            .name(course.getName())
+                            .description(course.getDescription())
+                            .build())
+                    .toList();
+    return courses;
+	}
+
+    // Convert Subject Entity -> Chapter_SubjectDto
+	public Chapter_SubjectDto convertSubjecttoChapter_SubjectDto(Subject subject) {
+		
+		 List<Subject_CourseDto> courses= covertCourseToSubject_CourseDto(subject);
+
+		 Chapter_SubjectDto subjectData= Chapter_SubjectDto.builder()
+			      .id(subject.getId())
+			      .name(subject.getName())
+			      .description(subject.getDescription())
+			      .courses(courses)
+				 .build();
+		 return subjectData;
+	}
+
 //	get Chapter details By Chapter Id
 	public ChapterResponseDto getChapterDetailsById(int Id) {
 		
@@ -56,14 +86,17 @@ public class ChapterService {
 		 if (chapterExits.isEmpty()) {
 		        throw new RuntimeException("This chapter is not exits");		
 		   }
-		 
+	       
+		 Chapter_SubjectDto subject=convertSubjecttoChapter_SubjectDto(chapterExits.get().getSubject());
+
+				 
 		 ChapterResponseDto chapterResponseDto=
 				 ChapterResponseDto.builder()
 				 .name(chapterExits.get().getName())
 		         .id(chapterExits.get().getId())
 		         .description(chapterExits.get().getDescription())
 		         .chapterOrder(chapterExits.get().getChapterOrder())
-		         .subject(chapterExits.get().getSubject())
+		         .subject(subject)
 				 .build();
 		 
 		 return chapterResponseDto;
@@ -89,7 +122,7 @@ public class ChapterService {
 	                    .name(chapter.getName())
 	                    .description(chapter.getDescription())
 	                    .chapterOrder(chapter.getChapterOrder())
-	                    .subject(chapter.getSubject())
+	                    .subject(convertSubjecttoChapter_SubjectDto(chapter.getSubject()))
 	                    .build())
 	            .toList();
 	}

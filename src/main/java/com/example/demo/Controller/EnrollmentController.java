@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.DTO.EnrollmentRequestDto;
 import com.example.demo.DTO.EnrollmentResponseDto;
@@ -20,19 +21,9 @@ import com.example.demo.Service.EnrollmentService;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-@Controller
+@RestController
 @RequestMapping("/enrollment")
-//POST 
-//
-//GET /me
-//
-//GET /{id}
-//
-//GET /courses{courseId}
-//
-//PUT /enrollments/{id}/progress
-//
-//DELETE /enrollments/{id}s/{id}
+
 public class EnrollmentController {
 
 	private EnrollmentService enrollmentService;

@@ -71,6 +71,7 @@ public class AuthService {
 		    return userResponseDTO;
 		}
 		
+//		login 
 		public UserResponseDTO login(LoginRequestDTO loginRequestDto) {
 			System.out.println("login method is running "+loginRequestDto.getEmail()+ " "+ loginRequestDto.getPassword());
 			 

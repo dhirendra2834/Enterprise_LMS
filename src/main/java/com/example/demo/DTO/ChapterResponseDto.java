@@ -13,6 +13,6 @@ public class ChapterResponseDto {
 	  private String name;
 	  private String description;
 	  private Integer chapterOrder;
-	  private Subject subject;
+	  private Chapter_SubjectDto subject;
 
 }

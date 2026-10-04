@@ -6,7 +6,10 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO.CourseDetailResponseDto;
+import com.example.demo.DTO.Course_SubjectDto;
+import com.example.demo.DTO.Subject_CourseDto;
 import com.example.demo.model.Course;
+import com.example.demo.model.Subject;
 import com.example.demo.repository.CourseRepository;
 
 import lombok.AllArgsConstructor;
@@ -30,6 +33,21 @@ public class CourseService {
 	   return "Course "+course.getName()+" created Successfully";
    }
 
+   // Convert Course Entity -> Subject_CourseDto
+  	public List<Course_SubjectDto> covertCourseToCourse_SubjectDto(Course course){
+  		List<Course_SubjectDto> courses =
+  				course.getSubjects()
+  					.stream()
+  					.map(subject -> Course_SubjectDto.builder()
+                              .id(subject.getId())
+                              .name(subject.getName())
+                              .description(subject.getDescription())
+                              .build())
+                      .toList();
+      return courses;
+  	}
+  	  
+  	
 //  get Course Data By course_id
    public CourseDetailResponseDto getCourseById(int id) {
 	  Optional<Course> courseData= courseRepository.findById(id);
@@ -37,12 +55,14 @@ public class CourseService {
 	  if(courseData.isEmpty()) {
 	        throw new RuntimeException("This Course is not exits");
 	  }
+	  List<Course_SubjectDto> courses= covertCourseToCourse_SubjectDto(courseData.get());
+	  
 	 CourseDetailResponseDto courseDetailResponseDto= 
 			 CourseDetailResponseDto.builder()
 			 .name(courseData.get().getName())
 			 .id(courseData.get().getId())
 			 .description(courseData.get().getDescription())
-			 .subjects(courseData.get().getSubjects())
+			 .subjects(courses)
 			 .fees(courseData.get().getFees())
 			 .build();
 	 	
@@ -52,13 +72,14 @@ public class CourseService {
    public List<CourseDetailResponseDto> getAllCourses() {
 
 	    List<Course> courses = courseRepository.findAll();
+	    
 
 	    return courses.stream()
 	            .map(course -> CourseDetailResponseDto.builder()
 	                    .id(course.getId())
 	                    .name(course.getName())
 	                    .description(course.getDescription())
-	                    .subjects(course.getSubjects())
+	                    .subjects(covertCourseToCourse_SubjectDto(course))
 	                    .fees(course.getFees())
 	                    .build())
 	            .toList();

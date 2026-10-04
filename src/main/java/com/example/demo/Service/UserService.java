@@ -96,7 +96,7 @@ public class UserService {
 		
 		  UserResponseDTO userResponseDTO =
 		            UserResponseDTO.builder()
-		                    .message("User registered successfully")
+		                    .message("This is your self details")
 		                    .Id(userData.getId())
 		                    .email(userData.getEmail())
 		                    .name(userData.getName())

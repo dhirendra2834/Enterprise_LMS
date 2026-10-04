@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.DTO.ChapterRequestDto;
 import com.example.demo.DTO.ChapterResponseDto;
@@ -22,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @AllArgsConstructor
-@Controller
-@RequestMapping("/chapters")
+@RestController
+@RequestMapping("/chapter")
 
 public class ChapterController {
 

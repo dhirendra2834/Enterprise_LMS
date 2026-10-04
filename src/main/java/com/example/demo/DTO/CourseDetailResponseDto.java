@@ -1,10 +1,7 @@
 package com.example.demo.DTO;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
-
-import com.example.demo.model.Subject;
 
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +15,7 @@ public class CourseDetailResponseDto {
 	private String name;
 	private String description;
 	
-	private List<Subject> subjects;
+	private List<Course_SubjectDto> subjects;
     
 	private BigDecimal fees;
 }
