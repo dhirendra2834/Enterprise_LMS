@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO.CourseDetailResponseDto;
 import com.example.demo.DTO.Course_SubjectDto;
+import com.example.demo.DTO.Subject_ChapterDto;
 import com.example.demo.DTO.Subject_CourseDto;
 import com.example.demo.model.Course;
 import com.example.demo.model.Subject;
@@ -32,21 +33,37 @@ public class CourseService {
 		System.out.println("course save successfully ");
 	   return "Course "+course.getName()+" created Successfully";
    }
+   
+// Convert Subject's Chapters -> Subject_ChapterDto
+public List<Subject_ChapterDto> covertChapterToChapterResponseDto(Subject subject) {
 
-   // Convert Course Entity -> Subject_CourseDto
-  	public List<Course_SubjectDto> covertCourseToCourse_SubjectDto(Course course){
-  		List<Course_SubjectDto> courses =
-  				course.getSubjects()
-  					.stream()
-  					.map(subject -> Course_SubjectDto.builder()
-                              .id(subject.getId())
-                              .name(subject.getName())
-                              .description(subject.getDescription())
-                              .build())
-                      .toList();
-      return courses;
-  	}
-  	  
+    return subject.getChapters()
+            .stream()
+            .map(chapter -> Subject_ChapterDto.builder()
+                    .id(chapter.getId())
+                    .name(chapter.getName())
+                    .description(chapter.getDescription())
+                    .chapterOrder(chapter.getChapterOrder())
+                    .build())
+            .toList();
+}
+	
+
+//Convert Course -> List<Course_SubjectDto>
+public List<Course_SubjectDto> covertCourseToCourse_SubjectDto(Course course) {
+
+ return course.getSubjects()
+         .stream()
+         .map(subject -> Course_SubjectDto.builder()
+                 .id(subject.getId())
+                 .name(subject.getName())
+                 .description(subject.getDescription())
+                 .chapters(
+                         covertChapterToChapterResponseDto(subject)
+                 )
+                 .build())
+         .toList();
+}
   	
 //  get Course Data By course_id
    public CourseDetailResponseDto getCourseById(int id) {

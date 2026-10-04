@@ -18,4 +18,5 @@ public class CourseDetailResponseDto {
 	private List<Course_SubjectDto> subjects;
     
 	private BigDecimal fees;
+	
 }

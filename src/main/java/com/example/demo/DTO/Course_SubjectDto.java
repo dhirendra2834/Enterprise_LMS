@@ -1,5 +1,7 @@
 package com.example.demo.DTO;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,5 +16,5 @@ public class Course_SubjectDto {
 	  	private Integer id;
 	    private String name;
 	    private String description;
-	    
+	    private List<Subject_ChapterDto> chapters;  
 }
