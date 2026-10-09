@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.DTO.ForgetPasswordRequestDto;
 import com.example.demo.DTO.LoginRequestDTO;
 import com.example.demo.DTO.UserResponseDTO;
 import com.example.demo.Service.AuthService;
+import com.example.demo.Service.EmailworkService;
 import com.example.demo.model.User;
 
 import lombok.AllArgsConstructor;
@@ -17,9 +19,15 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/auth")
+
+//POST /auth/forgot-password         
+//POST /auth/verify-otp            
+//POST /auth/reset-password        
+//POST /auth/logout   
 public class AuthController {
-	
+
 	private AuthService authService;
+	private EmailworkService emailworkService;
 
 //	Registration
 	@PostMapping("/signup")
@@ -35,5 +43,12 @@ public class AuthController {
 		UserResponseDTO userResponseDTO = authService.login(user);
 		return ResponseEntity.ok(userResponseDTO);
 	}
-	
+
+//	forget password
+	@PostMapping("/forget_password")
+	public ResponseEntity<String> forgetpassword(@RequestBody ForgetPasswordRequestDto forgetPasswordRequestDto){
+		String response=emailworkService.forgetPasswordSentOtp(forgetPasswordRequestDto);
+		return ResponseEntity.ok(response);
+	}
+
 }
