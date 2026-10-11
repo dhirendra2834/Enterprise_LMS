@@ -80,8 +80,7 @@ public class AuthService {
 		                new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail() , loginRequestDto.getPassword())
 		        );
 
-
-		               
+          
 		      System.out.println("login method is running1 ");
 	         //	  Get data 
 		      User existingUser = (User) authentication.getPrincipal();

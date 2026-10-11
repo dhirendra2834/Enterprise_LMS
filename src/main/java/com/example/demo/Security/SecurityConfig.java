@@ -26,7 +26,14 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		// used for Disable third party hit the backend
 		return http.csrf(csrf -> csrf.disable())
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll()
+				.authorizeHttpRequests(auth -> auth
+						.requestMatchers(
+				        "/v3/api-docs/**",
+				        "/v3/api-docs.yaml",
+				        "/swagger-ui/**",
+				        "/swagger-ui.html"
+				    ).permitAll()
+						.requestMatchers("/auth/**").permitAll()
 						// Role based API end Point filtering
 						.requestMatchers("/user/create/**", "/user/get/**", "/user/get/all","/courses")
 						.hasAnyRole("ADMIN", "ADMINITRATION").anyRequest().authenticated())
