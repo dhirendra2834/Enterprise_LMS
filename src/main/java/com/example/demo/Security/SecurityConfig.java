@@ -1,6 +1,7 @@
 package com.example.demo.Security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,8 +35,9 @@ public class SecurityConfig {
 				        "/swagger-ui.html"
 				    ).permitAll()
 						.requestMatchers("/auth/**").permitAll()
+						.requestMatchers(HttpMethod.GET, "/courses", "/courses/**", "/subjects/**", "/chapter/**").permitAll()
 						// Role based API end Point filtering
-						.requestMatchers("/user/create/**", "/user/get/**", "/user/get/all","/courses")
+						.requestMatchers("/user/create/**", "/user/get/**", "/user/get/all","/courses/**")
 						.hasAnyRole("ADMIN", "ADMINITRATION").anyRequest().authenticated())
 				
 				// this line make from Stateful to stateless
