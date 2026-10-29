@@ -104,7 +104,13 @@
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		 <!-- RazorPay depdendency  -->
 		
+		<dependency>
+    <groupId>com.razorpay</groupId>
+    <artifactId>razorpay-java</artifactId>
+    <version>1.4.10</version>
+</dependency>
 		 <!-- Swagger depdendency  -->
 		 
 <dependency>
