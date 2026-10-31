@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.DTO.EnrollmentRequestDto;
 import com.example.demo.DTO.EnrollmentResponseDto;
 import com.example.demo.Service.EnrollmentService;
 
@@ -28,10 +27,6 @@ public class EnrollmentController {
 
 	private EnrollmentService enrollmentService;
 	
-//	create Enrollment 
-	public ResponseEntity<String> createEnrollment(@RequestBody EnrollmentRequestDto enrollment, Authentication authentication){
-		return ResponseEntity.ok(enrollmentService.createEnrollment(enrollment, authentication));
-	}
 //	get self Enrollment Details
 	@GetMapping("/me")
 	public ResponseEntity<EnrollmentResponseDto> getSelfEnrollmentDetails(Authentication authentication) {

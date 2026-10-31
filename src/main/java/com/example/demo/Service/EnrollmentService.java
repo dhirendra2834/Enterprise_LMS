@@ -7,7 +7,6 @@ import java.util.Optional;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.DTO.EnrollmentRequestDto;
 import com.example.demo.DTO.EnrollmentResponseDto;
 import com.example.demo.model.Course;
 import com.example.demo.model.Enrollment;
@@ -27,31 +26,16 @@ public class EnrollmentService {
 	private CourseRepository courseRepository;
 
 //	create Enrollment
-	public String createEnrollment(EnrollmentRequestDto enrollment, Authentication authentication) {
-		User loggedInUser = (User) authentication.getPrincipal();
-
-		boolean userExitswithCourse = enrollmentRepository.existsByUserIdAndCourseId(loggedInUser.getId(),
-				enrollment.getCourseId());
-		if(userExitswithCourse) {
-			return "This user is already Enrolled in this course";
-		}
-		
-		Optional<Course> courseExits= courseRepository.findById(enrollment.getCourseId());
-		if(courseExits.isEmpty()) {
-			return "This Course is not  exits in this platform";
-		}
-		// extracting Course Details form Course Id
-		Course exitsCourseDetails= courseExits.get();
-         // Updating the Field of Enrollment object
+	public String createEnrollment(User user, Course course) {
 		 Enrollment enrollmentDetails = Enrollment.builder()
-		            .user(loggedInUser)
-		            .course(exitsCourseDetails)
+		            .user(user)
+		            .course(course)
 		            .enrolledAt(LocalDateTime.now())
-		            .status(EnrollmentStatus.PENDING)
+		            .status(EnrollmentStatus.ACTIVE)
+		            .progress(0.0)
 		            .build();
 		 
-		 enrollmentRepository.save(enrollmentDetails);
-		 
+		 enrollmentRepository.save(enrollmentDetails);	 
 		 return "Enrollment created successfully";
 	}
 

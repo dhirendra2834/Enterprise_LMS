@@ -39,6 +39,8 @@ public class PaymentService {
     private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
     private final EnrollmentRepository enrollmentRepository;
+    
+    private final EnrollmentService enrollmentService;
 
     @Value("${razorpay.key.id}")
     private String keyId;
@@ -83,6 +85,7 @@ public class PaymentService {
 
         Order razorpayOrder = razorpayClient.orders.create(orderRequest);
 
+//        Save Order details in the Payment Table
         Payment payment = new Payment();
         payment.setUser(user);
         payment.setCourse(course);
@@ -91,8 +94,10 @@ public class PaymentService {
         payment.setCurrency("INR");
         payment.setStatus(PaymentStatus.PENDING);
 
+//        save the Order details in DB 
         paymentRepository.save(payment);
         
+//        preparing response for create Order for frontend 
         CreatePaymentResponse createPaymentResponse= CreatePaymentResponse.builder()
         		.paymentRecordId(payment.getId())
         		.razorpayOrderId(payment.getRazorpayOrderId())
@@ -178,21 +183,10 @@ public class PaymentService {
         // Do not create a duplicate enrollment.
         if (!enrollmentRepository.existsByUserIdAndCourseId(
                 user.getId(), payment.getCourse().getId())) {
+        	
+//        	create Enrollment and give Access of Course 
+        	enrollmentService.createEnrollment(user, payment.getCourse());
 
-            // Adapt these setters/status to your existing Enrollment entity.
-            Enrollment enrollment =
-                    new Enrollment();
-
-            enrollment.setUser(user);
-            enrollment.setCourse(payment.getCourse());
-            enrollment.setEnrolledAt(LocalDateTime.now());
-            enrollment.setProgress(0.0);
-
-            // Set your existing successful enrollment status here.
-            // Example, if your enum contains ACTIVE:
-            // enrollment.setStatus(EnrollmentStatus.ACTIVE);
-
-            enrollmentRepository.save(enrollment);
         }
 
         return "Payment verified and course enrollment completed";

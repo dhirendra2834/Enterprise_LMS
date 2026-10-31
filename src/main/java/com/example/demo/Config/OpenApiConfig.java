@@ -10,7 +10,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 
 @Configuration
 public class OpenApiConfig {
-
+// this config file for swagger API read doc setup 
 	    @Bean
 	    public OpenAPI customOpenAPI() {
 
