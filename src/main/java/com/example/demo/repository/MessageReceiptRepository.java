@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.demo.DTO.ChatDto.ReceiptStatus;
 import com.example.demo.model.Chat.MessageReceipt;
+import com.example.demo.model.Type.ReceiptStatus;
 
 public interface MessageReceiptRepository
         extends JpaRepository<MessageReceipt, Long> {

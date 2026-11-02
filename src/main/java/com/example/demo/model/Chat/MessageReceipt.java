@@ -2,8 +2,8 @@ package com.example.demo.model.Chat;
 
 import java.time.LocalDateTime;
 
-import com.example.demo.DTO.ChatDto.ReceiptStatus;
 import com.example.demo.model.User;
+import com.example.demo.model.Type.ReceiptStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

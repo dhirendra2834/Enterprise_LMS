@@ -3,9 +3,9 @@ package com.example.demo.model.Chat;
 
 import java.time.LocalDateTime;
 
-import com.example.demo.DTO.ChatDto.ChatRoomType;
 import com.example.demo.model.Course;
 import com.example.demo.model.User;
+import com.example.demo.model.Type.ChatRoomType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

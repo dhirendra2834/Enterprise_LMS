@@ -1,4 +1,4 @@
-package com.example.demo.DTO.ChatDto;
+package com.example.demo.model.Type;
 
 public enum ReceiptStatus {
     SENT,
